@@ -2297,7 +2297,13 @@ function init() {
     IconSize = Math.round(Panel.PANEL_ICON_SIZE * 4 / 5);
 }
 
+let isEnabled = false;
+
 function enable() {
+    if (isEnabled)
+        return;
+    isEnabled = true;
+
     log('[System monitor] applet enabling');
     Schema = Convenience.getSettings();
 
@@ -2453,6 +2459,8 @@ function enable() {
 }
 
 function disable() {
+    return;
+
     // restore clock
     if (Main.__sm.tray.clockMoved) {
         let dateMenu = Main.panel.statusArea.dateMenu;
