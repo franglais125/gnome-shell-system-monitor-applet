@@ -20,7 +20,7 @@
 
 /* Ugly. This is here so that we don't crash old libnm-glib based shells unnecessarily
  * by loading the new libnm.so. Should go away eventually */
-const libnm_glib = imports.gi.GIRepository.Repository.get_default().is_registered("NMClient", "1.0");
+const libnm_glib = imports.gi.GIRepository.Repository.get_default().is_registered('NMClient', '1.0');
 
 let smDepsGtop = true;
 let smDepsNM = true;
@@ -683,6 +683,10 @@ const TipMenu = new Lang.Class({
         tipx = Math.max(tipx, monitor.x);
         tipx = Math.min(tipx, monitor.x + monitor.width - width);
         let tipy = Math.floor(ym);
+        // Hacky condition to determine if the status bar is at the top or at the bottom of the screen
+        if (allocation.y1 / monitor.height > 0.3) {
+            tipy = allocation.y1 - height; // If it is at the bottom, place the tooltip above instead of below
+        }
         this.actor.set_position(tipx, tipy);
     },
     open: function (animate) {
