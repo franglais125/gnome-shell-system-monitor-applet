@@ -33,7 +33,7 @@ const Gio = imports.gi.Gio;
 const Lang = imports.lang;
 const Shell = imports.gi.Shell;
 const St = imports.gi.St;
-const Power = imports.ui.status.power;
+const Power = imports.gi.UPowerGlib;
 // const System = imports.system;
 const ModalDialog = imports.ui.modalDialog;
 
@@ -1004,7 +1004,7 @@ const Battery = new Lang.Class({
         let isBattery = false;
         if (typeof (this._proxy.GetDevicesRemote) === 'undefined') {
             let device_type = this._proxy.Type;
-            isBattery = (device_type === Power.UPower.DeviceKind.BATTERY);
+            isBattery = (device_type === Power.DeviceKind.BATTERY);
             if (isBattery) {
                 battery_found = true;
                 let icon = this._proxy.IconName;
@@ -1032,7 +1032,7 @@ const Battery = new Lang.Class({
                     let [device_id, device_type, icon, percentage, state, seconds] = result[i];
 
                     if (Compat.versionCompare(shell_Version, '3.9')) {
-                        isBattery = (device_type === Power.UPower.DeviceKind.BATTERY);
+                        isBattery = (device_type === Power.DeviceKind.BATTERY);
                     } else {
                         isBattery = (device_type === Power.UPDeviceType.BATTERY);
                     }
