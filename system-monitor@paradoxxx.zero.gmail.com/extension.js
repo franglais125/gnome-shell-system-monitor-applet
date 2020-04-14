@@ -1606,12 +1606,12 @@ const Mem = class SystemMonitor_Mem extends ElementBase {
         super({
             elt: 'memory',
             item_name: _('Memory'),
-            color_name: ['program', 'buffer', 'cache']
+            color_name: ['program', 'cache']
         });
         this.max = 1;
 
         this.gtop = new GTop.glibtop_mem();
-        this.mem = [0, 0, 0];
+        this.mem = [0, 0];
 
         GTop.glibtop_get_mem(this.gtop);
         this.total = Math.round(this.gtop.total / 1024 / 1024);
@@ -1629,20 +1629,17 @@ const Mem = class SystemMonitor_Mem extends ElementBase {
     }
     refresh() {
         GTop.glibtop_get_mem(this.gtop);
+
+        var cache = this.gtop.total - this.gtop.user - this.gtop.free;
+
+        this.mem[0] = Math.round(this.gtop.user / this._unitConversion);
+        this.mem[1] = Math.round(cache / this._unitConversion);
+        this.total = Math.round(this.gtop.total / this._unitConversion);
+
         if (this.useGiB) {
-            this.mem[0] = Math.round(this.gtop.user / this._unitConversion);
             this.mem[0] /= this._decimals;
-            this.mem[1] = Math.round(this.gtop.buffer / this._unitConversion);
             this.mem[1] /= this._decimals;
-            this.mem[2] = Math.round(this.gtop.cached / this._unitConversion);
-            this.mem[2] /= this._decimals;
-            this.total = Math.round(this.gtop.total / this._unitConversion);
             this.total /= this._decimals;
-        } else {
-            this.mem[0] = Math.round(this.gtop.user / this._unitConversion);
-            this.mem[1] = Math.round(this.gtop.buffer / this._unitConversion);
-            this.mem[2] = Math.round(this.gtop.cached / this._unitConversion);
-            this.total = Math.round(this.gtop.total / this._unitConversion);
         }
     }
     _pad(number) {
@@ -1659,9 +1656,9 @@ const Mem = class SystemMonitor_Mem extends ElementBase {
     }
     _apply() {
         if (this.total === 0) {
-            this.vals = this.tip_vals = [0, 0, 0];
+            this.vals = this.tip_vals = [0, 0];
         } else {
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 2; i++) {
                 this.vals[i] = this.mem[i] / this.total;
                 this.tip_vals[i] = Math.round(this.vals[i] * 100);
             }
